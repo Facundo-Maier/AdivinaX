@@ -91,7 +91,7 @@ btnSiguiente.addEventListener("click", siguienteRonda);
 
 btnGuardar.addEventListener("click",guardarPuntaje);
 
-btnJugarDeNuevo.addEventListener("click",empezarJuego);
+btnJugarDeNuevo.addEventListener("click",volverAlInicio);
 
 
 
@@ -176,6 +176,8 @@ function comprobarRespuesta(event) {
     const max = Number(boton.dataset.max);
 
     const respuestaCorrecta = obtenerRespuestaCorrecta();
+    
+    const respuestaFormateada = respuestaCorrecta.toLocaleString("es-ES");
 
     const botones =
     document.querySelectorAll("#opciones button");
@@ -191,7 +193,8 @@ function comprobarRespuesta(event) {
     ) {
 
         resultado.textContent =
-            "¡Correcto! +100 puntos";
+            "¡Correcto! +100 puntos. La respuesta era " +
+            respuestaFormateada + ".";
 
         puntajeActual += 100;
         puntaje.textContent = puntajeActual;
@@ -199,7 +202,7 @@ function comprobarRespuesta(event) {
     } else {
 
         resultado.textContent =
-            "Incorrecto. La respuesta era " + respuestaCorrecta;
+            "Incorrecto. La respuesta era " + respuestaFormateada + ".";
     }
     btnSiguiente.hidden = false;
 }
@@ -351,6 +354,18 @@ async function guardarPuntaje() {
         // Si falló, permitimos volver a intentarlo
         btnGuardar.disabled = false;
     }
+}
+
+function volverAlInicio() {
+
+    fin.hidden = true;
+    juego.hidden = true;
+    inicio.hidden = false;
+
+    inputNombre.value = "";
+    mensajeGuardado.textContent = "";
+
+    inputNombre.focus();
 }
 
 document.addEventListener("DOMContentLoaded", function() {
