@@ -2,7 +2,7 @@
 
 require_once 'env.php';
 
-function obtenerTweetsDesdeX($query, $cantidad = 10) {
+function obtenerTweetsDesdeX($query, $cantidad) {
 
     cargarEnv();
 

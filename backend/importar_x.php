@@ -7,7 +7,7 @@ try {
 
     $resultado = obtenerTweetsDesdeX(
         'a lang:es -is:retweet -is:reply',
-        20
+        50
     );
 
     $usuarios = $resultado['includes']['users'] ?? [];
