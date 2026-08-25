@@ -27,64 +27,6 @@ const btnGuardar = document.getElementById("btnGuardar");
 const mensajeGuardado = document.getElementById("mensajeGuardado");
 const btnJugarDeNuevo = document.getElementById("btnJugarDeNuevo");
 
-
-const tiposPregunta = [
-    {
-        tipo: "likes",
-        texto: "¿Cuántos likes tiene este tweet?",
-        rangos: [
-            { min: 0, max: 0, texto: "0" },
-            { min: 1, max: 2, texto: "1 - 2" },
-            { min: 3, max: 10, texto: "3 - 10" },
-            { min: 11, max: Infinity, texto: "11+" }
-        ]
-    },
-
-    {
-        tipo: "seguidores",
-        texto: "¿Cuántos seguidores tiene el autor?",
-        rangos: [
-            { min: 0, max: 100, texto: "0 - 100" },
-            { min: 101, max: 500, texto: "101 - 500" },
-            { min: 501, max: 2500, texto: "501 - 2.500" },
-            { min: 2501, max: Infinity, texto: "2.501+" }
-        ]
-    },
-
-    {
-        tipo: "siguiendo",
-        texto: "¿A cuántas cuentas sigue el autor?",
-        rangos: [
-            { min: 0, max: 200, texto: "0 - 200" },
-            { min: 201, max: 500, texto: "201 - 500" },
-            { min: 501, max: 1000, texto: "501 - 1.000" },
-            { min: 1001, max: Infinity, texto: "1.001+" }
-        ]
-    },
-
-    {
-        tipo: "tweets_usuario",
-        texto: "¿Cuántos posts ha publicado aproximadamente esta cuenta?",
-        rangos: [
-            { min: 0, max: 4000, texto: "0 - 4.000" },
-            { min: 4001, max: 15000, texto: "4.001 - 15.000" },
-            { min: 15001, max: 55000, texto: "15.001 - 55.000" },
-            { min: 55001, max: Infinity, texto: "55.001+" }
-        ]
-    },
-
-    {
-        tipo: "likes_usuario",
-        texto: "¿Cuántos likes ha dado esta cuenta?",
-        rangos: [
-            { min: 0, max: 4000, texto: "0 - 4.000" },
-            { min: 4001, max: 40000, texto: "4.001 - 40.000" },
-            { min: 40001, max: 120000, texto: "40.001 - 120.000" },
-            { min: 120001, max: Infinity, texto: "120.001+" }
-        ]
-    }
-];
-
 btnEmpezar.addEventListener("click", empezarJuego);
 
 btnSiguiente.addEventListener("click", siguienteRonda);
@@ -129,7 +71,7 @@ async function cargarTweet() {
     try {
 
         const respuesta = await fetch(
-            "http://localhost:8000/api/tweets/random"
+            "http://localhost:8000/api/ronda"
         );
 
         if (!respuesta.ok) {
@@ -138,104 +80,138 @@ async function cargarTweet() {
             );
         }
 
-        const tweet = await respuesta.json();
+        const ronda = await respuesta.json();
 
-        if (tweetsUsados.includes(tweet.x_id)) {
+        if (tweetsUsados.includes(ronda.tweet_id)) {
             return cargarTweet();
         }
 
-        tweetActual = tweet;
+        tweetActual = ronda;
 
-        tweetsUsados.push(tweet.x_id);
+        tweetsUsados.push(ronda.tweet_id);
 
-        usuario.textContent = "@" + tweet.usuario;
-        contenido.textContent = tweet.contenido;
+        usuario.textContent = "@" + ronda.usuario;
+        contenido.textContent = ronda.contenido;
 
         document.getElementById("ronda").textContent =
             "Ronda " + rondaActual + "/" + totalRondas;
 
         resultado.textContent = "";
 
-        generarPregunta();
+        mostrarPregunta(ronda.pregunta);
 
     } catch (error) {
 
-        console.error("Error al cargar el tweet:", error);
+        console.error("Error al cargar la ronda:", error);
 
         resultado.textContent =
-            "⚠️ No se pudo cargar el tweet.";
+            "⚠️ No se pudo cargar la ronda.";
     }
 }
 
-
-function comprobarRespuesta(event) {
+async function comprobarRespuesta(event) {
 
     const boton = event.target;
 
-    const min = Number(boton.dataset.min);
-    const max = Number(boton.dataset.max);
-
-    const respuestaCorrecta = obtenerRespuestaCorrecta();
-    
-    const respuestaFormateada = respuestaCorrecta.toLocaleString("es-ES");
+    const opcionElegida = boton.dataset.opcion;
 
     const botones =
-    document.querySelectorAll("#opciones button");
+        document.querySelectorAll("#opciones button");
 
-        
     botones.forEach(function(boton) {
         boton.disabled = true;
     });
 
-    if (
-        respuestaCorrecta >= min &&
-        respuestaCorrecta <= max
-    ) {
+    try {
+        resultado.textContent = "Comprobando...";
+
+        const respuesta = await fetch(
+            "http://localhost:8000/api/respuesta",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    tweet_id: tweetActual.tweet_id,
+                    tipo: preguntaActual.tipo,
+                    opcion: opcionElegida
+                })
+            }
+        );
+
+        if (!respuesta.ok) {
+            throw new Error(
+                "El servidor respondió con HTTP " +
+                respuesta.status
+            );
+        }
+
+        const datos = await respuesta.json();
+
+        const respuestaFormateada =
+            Number(datos.respuesta_correcta)
+                .toLocaleString("es-ES");
+
+        if (datos.correcta) {
+
+            resultado.textContent =
+                "¡Correcto! +" +
+                datos.puntos +
+                " puntos. La respuesta era " +
+                respuestaFormateada +
+                ".";
+
+            puntajeActual += datos.puntos;
+
+            puntaje.textContent = puntajeActual;
+
+        } else {
+
+            resultado.textContent =
+                "Incorrecto. La respuesta era " +
+                respuestaFormateada +
+                ".";
+        }
+
+        btnSiguiente.hidden = false;
+
+    } catch (error) {
+
+        console.error(
+            "Error al comprobar la respuesta:",
+            error
+        );
 
         resultado.textContent =
-            "¡Correcto! +100 puntos. La respuesta era " +
-            respuestaFormateada + ".";
+            "⚠️ No se pudo comprobar la respuesta.";
 
-        puntajeActual += 100;
-        puntaje.textContent = puntajeActual;
-
-    } else {
-
-        resultado.textContent =
-            "Incorrecto. La respuesta era " + respuestaFormateada + ".";
+        // Si falló la petición permitimos intentar otra vez.
+        botones.forEach(function(boton) {
+            boton.disabled = false;
+        });
     }
-    btnSiguiente.hidden = false;
 }
 
-function generarPregunta() {
+function mostrarPregunta(pregunta) {
 
-    const indice = Math.floor(
-        Math.random() * tiposPregunta.length
-    );
-
-    preguntaActual = tiposPregunta[indice];
+    preguntaActual = pregunta;
 
     document.getElementById("textoPregunta").textContent =
-        preguntaActual.texto;
-
-    generarOpciones();
-}
-
-
-function generarOpciones() {
+        pregunta.texto;
 
     const opciones = document.getElementById("opciones");
 
     opciones.innerHTML = "";
 
-    preguntaActual.rangos.forEach(function(rango) {
+    pregunta.opciones.forEach(function(opcion) {
 
         const boton = document.createElement("button");
 
-        boton.textContent = rango.texto;
-
-        boton.dataset.min = rango.min;
-        boton.dataset.max = rango.max;
+        boton.textContent = opcion.texto;
+        boton.dataset.opcion = opcion.id;
 
         boton.addEventListener(
             "click",
@@ -244,29 +220,6 @@ function generarOpciones() {
 
         opciones.appendChild(boton);
     });
-}
-
-function obtenerRespuestaCorrecta() {
-
-    if (preguntaActual.tipo === "likes") {
-        return tweetActual.likes;
-    }
-
-    if (preguntaActual.tipo === "seguidores") {
-        return tweetActual.seguidores;
-    }
-
-    if (preguntaActual.tipo === "siguiendo") {
-        return tweetActual.siguiendo;
-    }
-
-    if (preguntaActual.tipo === "tweets_usuario") {
-        return tweetActual.cantidad_tweets;
-    }
-
-    if (preguntaActual.tipo === "likes_usuario") {
-        return tweetActual.likes_usuario;
-    }
 }
 
 async function siguienteRonda() {

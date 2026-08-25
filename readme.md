@@ -106,8 +106,7 @@ curl http://localhost:8000/importar_x.php
 TODO:
  Mejorar diseño visual
  Agregar más tipos de preguntas
- Categorizar las preguntas para no traer tantos datos del backend al frontend
+ Mejorar tiempos de respuesta
  Mejorar sistema de puntuación
  Mejorar manejo de errores
- Ajustar los rangos de respuestas utilizando datos reales
  Preparar deploy/self-hosting
