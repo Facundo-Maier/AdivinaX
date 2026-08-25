@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AdivinaTwit</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="app">
+
+        <header>
+            <h1>AdivinaTwit</h1>
+            <p>¿Qué tanto sabés sobre Twitter?</p>
+        </header>
+
+        <div id="layout">
+
+            <main id="contenidoPrincipal">
+
+                <!-- Pantalla inicial -->
+                <section id="inicio">
+
+                    <h2>Ingresa tu nombre</h2>
+
+                    <input
+                        type="text"
+                        id="nombreJugador"
+                        placeholder="Tu nombre"
+                    >
+
+                    <button id="btnEmpezar">
+                        Empezar
+                    </button>
+
+                </section>
+
+
+                <!-- Juego -->
+                <section id="juego" hidden>
+
+                    <div id="infoJugador">
+
+                        <span>
+                            Jugador:
+                            <strong id="jugador"></strong>
+                        </span>
+
+                        <span>
+                            Puntaje:
+                            <strong id="puntaje">0</strong>
+                        </span>
+
+                    </div>
+
+                    <p id="ronda"></p>
+
+                    <article id="tweet">
+
+                        <p id="usuario"></p>
+
+                        <p id="contenido"></p>
+
+                    </article>
+
+                    <section id="pregunta">
+
+                        <h3 id="textoPregunta"></h3>
+
+                        <div id="opciones"></div>
+
+                    </section>
+
+                    <p id="resultado"></p>
+
+                    <button id="btnSiguiente" hidden>
+                        Siguiente
+                    </button>
+
+                </section>
+
+
+                <!-- Fin del juego -->
+                <section id="fin" hidden>
+
+                    <h2>Fin del juego</h2>
+
+                    <p>
+                        Tu puntaje:
+                        <strong id="puntajeFinal">0</strong>
+                    </p>
+
+                    <button id="btnGuardar">
+                        Guardar puntaje
+                    </button>
+
+                    <p id="mensajeGuardado"></p>
+
+                    <button id="btnJugarDeNuevo">
+                        Jugar de nuevo
+                    </button>
+
+                </section>
+
+            </main>
+
+
+            <!-- Leaderboard -->
+            <aside id="leaderboard">
+
+                <h2>🏆 TOP 10</h2>
+
+                <ol id="listaLeaderboard"></ol>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

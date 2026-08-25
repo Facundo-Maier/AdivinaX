@@ -1,0 +1,156 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #111827;
+    color: #f9fafb;
+}
+
+#app {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 42px;
+}
+
+header p {
+    margin-top: 8px;
+    color: #9ca3af;
+}
+
+#layout {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+#contenido {
+    flex: 1;
+}
+
+#contenidoPrincipal {
+    flex: 1;
+    max-width: 800px;
+}
+
+#inicio,
+#juego,
+#fin,
+#leaderboard {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 12px;
+    padding: 25px;
+}
+
+#leaderboard {
+    width: 260px;
+}
+
+#leaderboard h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+#listaLeaderboard {
+    padding-left: 30px;
+    margin-bottom: 0;
+}
+
+#listaLeaderboard li {
+    padding: 8px 0;
+    border-bottom: 1px solid #374151;
+}
+
+#infoJugador {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#ronda {
+    text-align: center;
+    font-weight: bold;
+}
+
+#tweet {
+    background: #111827;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+#usuario {
+    font-weight: bold;
+}
+
+#contenido {
+    font-size: 20px;
+}
+
+#textoPregunta {
+    font-size: 22px;
+}
+
+#opciones {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#opciones button {
+    width: 100%;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#resultado {
+    min-height: 25px;
+    margin-top: 20px;
+    font-weight: bold;
+}
+
+input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #4b5563;
+    font-size: 16px;
+}
+
+@media (max-width: 750px) {
+
+    #layout {
+        flex-direction: column;
+    }
+
+    #leaderboard {
+        width: 100%;
+    }
+
+}
