@@ -2,7 +2,7 @@
 
 require_once 'env.php';
 
-function obtenerTweetsDesdeX($query, $cantidad) {
+function obtenerTweetsDesdeX($query, $cantidad = 10, $startTime = null, $endTime = null ) {
 
     cargarEnv();
 
@@ -14,13 +14,23 @@ function obtenerTweetsDesdeX($query, $cantidad) {
 
     $url = 'https://api.x.com/2/tweets/search/recent';
 
-    $params = http_build_query([
+    $preparams = [
         'query' => $query,
         'max_results' => $cantidad,
         'tweet.fields' => 'created_at,public_metrics,lang,author_id',
         'expansions' => 'author_id',
         'user.fields' => 'username,name,public_metrics,created_at'
-    ]);
+    ];
+
+    if ($startTime !== null) {
+        $preparams['start_time'] = $startTime;
+    }
+
+    if ($endTime !== null) {
+        $preparams['end_time'] = $endTime;
+    }
+
+    $params = http_build_query($preparams);
 
     $ch = curl_init($url . '?' . $params);
 

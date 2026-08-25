@@ -29,49 +29,60 @@ const btnJugarDeNuevo = document.getElementById("btnJugarDeNuevo");
 
 
 const tiposPregunta = [
-  {
-      tipo: "seguidores",
-      texto: "¿Cuántos seguidores tiene el autor?",
-      rangos: [
-          { min: 0, max: 100, texto: "0 - 100" },
-          { min: 101, max: 1000, texto: "101 - 1.000" },
-          { min: 1001, max: 10000, texto: "1.001 - 10.000" },
-          { min: 10001, max: Infinity, texto: "10.000+" }
-      ]
-  },
+    {
+        tipo: "likes",
+        texto: "¿Cuántos likes tiene este tweet?",
+        rangos: [
+            { min: 0, max: 0, texto: "0" },
+            { min: 1, max: 2, texto: "1 - 2" },
+            { min: 3, max: 10, texto: "3 - 10" },
+            { min: 11, max: Infinity, texto: "11+" }
+        ]
+    },
 
-  {
-      tipo: "siguiendo",
-      texto: "¿A cuántas cuentas sigue el autor?",
-      rangos: [
-          { min: 0, max: 100, texto: "0 - 100" },
-          { min: 101, max: 500, texto: "101 - 500" },
-          { min: 501, max: 2000, texto: "501 - 2.000" },
-          { min: 2001, max: Infinity, texto: "2.000+" }
-      ]
-  },
+    {
+        tipo: "seguidores",
+        texto: "¿Cuántos seguidores tiene el autor?",
+        rangos: [
+            { min: 0, max: 100, texto: "0 - 100" },
+            { min: 101, max: 500, texto: "101 - 500" },
+            { min: 501, max: 2500, texto: "501 - 2.500" },
+            { min: 2501, max: Infinity, texto: "2.501+" }
+        ]
+    },
 
-  {
-      tipo: "tweets_usuario",
-      texto: "¿Cuántos posts ha publicado aproximadamente esta cuenta?",
-      rangos: [
-          { min: 0, max: 1000, texto: "0 - 1.000" },
-          { min: 1001, max: 10000, texto: "1.001 - 10.000" },
-          { min: 10001, max: 100000, texto: "10.001 - 100.000" },
-          { min: 100001, max: Infinity, texto: "100.000+" }
-      ]
-  },
+    {
+        tipo: "siguiendo",
+        texto: "¿A cuántas cuentas sigue el autor?",
+        rangos: [
+            { min: 0, max: 200, texto: "0 - 200" },
+            { min: 201, max: 500, texto: "201 - 500" },
+            { min: 501, max: 1000, texto: "501 - 1.000" },
+            { min: 1001, max: Infinity, texto: "1.001+" }
+        ]
+    },
 
-  {
-      tipo: "likes_usuario",
-      texto: "¿Cuántos likes ha dado esta cuenta?",
-      rangos: [
-          { min: 0, max: 1000, texto: "0 - 1.000" },
-          { min: 1001, max: 10000, texto: "1.001 - 10.000" },
-          { min: 10001, max: 100000, texto: "10.001 - 100.000" },
-          { min: 100001, max: Infinity, texto: "100.000+" }
-      ]
-  }
+    {
+        tipo: "tweets_usuario",
+        texto: "¿Cuántos posts ha publicado aproximadamente esta cuenta?",
+        rangos: [
+            { min: 0, max: 4000, texto: "0 - 4.000" },
+            { min: 4001, max: 15000, texto: "4.001 - 15.000" },
+            { min: 15001, max: 55000, texto: "15.001 - 55.000" },
+            { min: 55001, max: Infinity, texto: "55.001+" }
+        ]
+    },
+
+    {
+        tipo: "likes_usuario",
+        texto: "¿Cuántos likes ha dado esta cuenta?",
+        rangos: [
+            { min: 0, max: 4000, texto: "0 - 4.000" },
+            { min: 4001, max: 40000, texto: "4.001 - 40.000" },
+            { min: 40001, max: 120000, texto: "40.001 - 120.000" },
+            { min: 120001, max: Infinity, texto: "120.001+" }
+        ]
+    }
 ];
 
 btnEmpezar.addEventListener("click", empezarJuego);
@@ -234,21 +245,25 @@ function generarOpciones() {
 
 function obtenerRespuestaCorrecta() {
 
-  if (preguntaActual.tipo === "seguidores") {
-      return tweetActual.seguidores;
-  }
+    if (preguntaActual.tipo === "likes") {
+        return tweetActual.likes;
+    }
 
-  if (preguntaActual.tipo === "siguiendo") {
-      return tweetActual.siguiendo;
-  }
+    if (preguntaActual.tipo === "seguidores") {
+        return tweetActual.seguidores;
+    }
 
-  if (preguntaActual.tipo === "tweets_usuario") {
-      return tweetActual.cantidad_tweets;
-  }
+    if (preguntaActual.tipo === "siguiendo") {
+        return tweetActual.siguiendo;
+    }
 
-  if (preguntaActual.tipo === "likes_usuario") {
-      return tweetActual.likes_usuario;
-  }
+    if (preguntaActual.tipo === "tweets_usuario") {
+        return tweetActual.cantidad_tweets;
+    }
+
+    if (preguntaActual.tipo === "likes_usuario") {
+        return tweetActual.likes_usuario;
+    }
 }
 
 async function siguienteRonda() {

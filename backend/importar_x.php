@@ -5,9 +5,21 @@ require 'database.php';
 
 try {
 
+    $inicio = gmdate(
+        'Y-m-d\TH:i:s\Z',
+        strtotime('-6 days')
+    );
+
+    $fin = gmdate(
+        'Y-m-d\TH:i:s\Z',
+        strtotime('-2 days')
+    );
+
     $resultado = obtenerTweetsDesdeX(
         'a lang:es -is:retweet -is:reply',
-        50
+        50,
+        $inicio,
+        $fin
     );
 
     $usuarios = $resultado['includes']['users'] ?? [];
