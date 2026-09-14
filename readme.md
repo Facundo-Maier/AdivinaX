@@ -124,4 +124,4 @@ http://IP-DEL-SERVIDOR:8080
 - Agregar más tipos de preguntas
 - Mejorar sistema de puntuación
 - Mejorar manejo de errores
-- Preparar deploy/self-hosting
+- Preparar deploy público
