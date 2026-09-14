@@ -21,28 +21,32 @@ Los tweets utilizados durante las partidas se almacenan localmente en MySQL. La 
 ## Arquitectura
 
 ```text
-┌─────────────────┐
-│    Frontend     │
-│ HTML/CSS/JS     │
-│ localhost:5500  │
+┌─────────────────┐   
+│    Navegador    │
 └────────┬────────┘
          │
-         │ HTTP / JSON
+         │ HTTP:8080
          ▼
 ┌─────────────────┐
-│     Backend     │
-│      PHP        │
-│ localhost:8000  │
+│     Nginx       │
+│    Frontend     │
+│   HTML/CSS/JS   │
 └────────┬────────┘
          │
-         │ PDO / SQL
+         │ API
+         ▼
+┌─────────────────┐
+│   Apache + PHP  │
+│    Backend      │
+└────────┬────────┘
+         │
+         │ SQL
          ▼
 ┌─────────────────┐
 │      MySQL      │
-│    Docker       │
 └─────────────────┘
 ```
-
+Nginx, PHP y MySQL se ejecutan en contenedores Docker.
 ---
 
 ## Requisitos
@@ -50,10 +54,9 @@ Los tweets utilizados durante las partidas se almacenan localmente en MySQL. La 
 Antes de ejecutar el proyecto se necesita:
 
 - Docker
-- PHP
-- PHP cURL
+- Docker Compose
 - Un navegador
-- Live Server (opcional, pero recomendado para el frontend)
+- Una cuenta y credenciales de la API de X para importar tweets
 
 Crear un archivo `.env` en la raíz del proyecto tomando como referencia `.env.example`.
 
@@ -61,44 +64,29 @@ No publicar tokens o contraseñas reales.
 
 ## Ejecución
 
-### 1. Levantar MySQL
+### 1. Configurar variables de entorno
 
-Desde la raíz del proyecto:
+Crear .env a partir de .env.example y configurar las credenciales necesarias.
+
+### 2. Levantar AdivinaTwit
+
+Desde raíz del proyecto:
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
-Comprobar que el contenedor está funcionando:
+Comprobar que los contenedores están funcionando:
 
 ```bash
 docker compose ps
 ```
 
-### 2. Levantar el backend
-
-Desde la carpeta `backend`:
+La aplicación estará disponible en:
 
 ```bash
-php -S localhost:8000
+http://localhost:8080
 ```
-
-La API quedará disponible en:
-
-```text
-http://localhost:8000
-```
-
-### 3. Levantar el frontend
-
-Abrir `frontend/index.html` utilizando Live Server.
-
-Por defecto:
-
-```text
-http://localhost:5500
-```
-
 ---
 
 ## Importar tweets desde X
@@ -106,13 +94,13 @@ http://localhost:5500
 AdivinaTwit no consulta X durante las partidas.
 
 Los tweets deben importarse previamente y quedan almacenados en MySQL.
+La importación está restringida a ejecución administrativa desde CLI y no se encuentra disponible a través de la aplicación web.
 
 Para realizar una importación:
 
 1. Configurar las credenciales de X en `.env`.
-2. Levantar MySQL.
-3. Levantar el backend PHP.
-4. Ejecutar:
+2. Levantar los contenedores.
+3. Ejecutar:
 
 ```bash
 curl http://localhost:8000/importar_x.php
@@ -120,11 +108,20 @@ curl http://localhost:8000/importar_x.php
 
 ---
 
+## Self-hosting
+
+AdivinaTwit puede ejecutarse localmente utilizando Docker y ser utilizado desde otros dispositivos.
+Se podra acceder en:
+
+```bash
+http://IP-DEL-SERVIDOR:8080
+```
+---
+
 ## TODO
 
 - Mejorar diseño visual
 - Agregar más tipos de preguntas
-- Mejorar tiempos de respuesta
 - Mejorar sistema de puntuación
 - Mejorar manejo de errores
 - Preparar deploy/self-hosting

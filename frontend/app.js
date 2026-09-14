@@ -118,7 +118,7 @@ async function comprobarRespuesta(event) {
         resultado.textContent = "Comprobando...";
 
         const respuesta = await fetch(
-            "http://localhost:8000/api/respuesta",
+            "/api/respuesta",
             {
                 method: "POST",
 
@@ -221,7 +221,7 @@ function mostrarPregunta(pregunta) {
 async function obtenerRonda() {
 
     const respuesta = await fetch(
-        "http://localhost:8000/api/ronda"
+        "/api/ronda"
     );
 
     if (!respuesta.ok) {
@@ -294,7 +294,7 @@ function terminarJuego() {
 async function leaderboard() {
 
   const respuesta = await fetch(
-    "http://localhost:8000/api/jugadores/top"
+    "/api/jugadores/top"
   );
   
   const jugadores = await respuesta.json();
@@ -326,7 +326,7 @@ async function guardarPuntaje() {
         };
 
         const respuesta = await fetch(
-            "http://localhost:8000/api/jugadores",
+            "/api/jugadores",
             {
                 method: "POST",
 

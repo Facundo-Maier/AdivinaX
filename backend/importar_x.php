@@ -1,5 +1,17 @@
 <?php
 
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+
+    header('Content-Type: application/json');
+
+    echo json_encode([
+        'error' => 'La importación solo puede ejecutarse desde CLI'
+    ]);
+
+    exit;
+}
+
 require 'x_api.php';
 require 'database.php';
 

@@ -2,6 +2,18 @@
 
 function cargarEnv() {
 
+    // Si Docker (u otro entorno) ya cargó las variables,
+    // no necesitamos leer el archivo .env.
+    if (
+        getenv('DB_HOST') !== false &&
+        getenv('DB_NAME') !== false &&
+        getenv('DB_USER') !== false &&
+        getenv('DB_PASSWORD') !== false
+    ) {
+        return;
+    }
+
+    // Para desarrollo local fuera de Docker
     $archivo = __DIR__ . '/../.env';
 
     if (!file_exists($archivo)) {
@@ -23,6 +35,8 @@ function cargarEnv() {
 
         [$nombre, $valor] = explode('=', $linea, 2);
 
-        putenv(trim($nombre) . '=' . trim($valor));
+        putenv(
+            trim($nombre) . '=' . trim($valor)
+        );
     }
 }
