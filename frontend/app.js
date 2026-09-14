@@ -3,6 +3,7 @@ let preguntaActual = null;
 let puntajeActual = 0;
 let rondaActual = 0;
 let tweetsUsados = [];
+let proximaRonda = null;
 
 const totalRondas = 10;
 const inputNombre = document.getElementById("nombreJugador");
@@ -70,39 +71,30 @@ async function cargarTweet() {
 
     try {
 
-        const respuesta = await fetch(
-            "http://localhost:8000/api/ronda"
-        );
+        let ronda;
 
-        if (!respuesta.ok) {
-            throw new Error(
-                "El servidor respondió con HTTP " + respuesta.status
-            );
+        if (proximaRonda !== null) {
+
+            ronda = proximaRonda;
+            proximaRonda = null;
+
+        } else {
+
+            ronda = await obtenerRonda();
         }
-
-        const ronda = await respuesta.json();
 
         if (tweetsUsados.includes(ronda.tweet_id)) {
             return cargarTweet();
         }
 
-        tweetActual = ronda;
-
-        tweetsUsados.push(ronda.tweet_id);
-
-        usuario.textContent = "@" + ronda.usuario;
-        contenido.textContent = ronda.contenido;
-
-        document.getElementById("ronda").textContent =
-            "Ronda " + rondaActual + "/" + totalRondas;
-
-        resultado.textContent = "";
-
-        mostrarPregunta(ronda.pregunta);
+        mostrarRonda(ronda);
 
     } catch (error) {
 
-        console.error("Error al cargar la ronda:", error);
+        console.error(
+            "Error al cargar la ronda:",
+            error
+        );
 
         resultado.textContent =
             "⚠️ No se pudo cargar la ronda.";
@@ -177,6 +169,10 @@ async function comprobarRespuesta(event) {
         }
 
         btnSiguiente.hidden = false;
+        
+        if (rondaActual < totalRondas) {
+          precargarSiguienteRonda();
+        }
 
     } catch (error) {
 
@@ -220,6 +216,58 @@ function mostrarPregunta(pregunta) {
 
         opciones.appendChild(boton);
     });
+}
+
+async function obtenerRonda() {
+
+    const respuesta = await fetch(
+        "http://localhost:8000/api/ronda"
+    );
+
+    if (!respuesta.ok) {
+        throw new Error(
+            "El servidor respondió con HTTP " +
+            respuesta.status
+        );
+    }
+
+    return await respuesta.json();
+}
+
+function mostrarRonda(ronda) {
+
+    tweetActual = ronda;
+    preguntaActual = ronda.pregunta;
+
+    tweetsUsados.push(ronda.tweet_id);
+
+    usuario.textContent = "@" + ronda.usuario;
+    contenido.textContent = ronda.contenido;
+
+    document.getElementById("ronda").textContent =
+        "Ronda " + rondaActual + "/" + totalRondas;
+
+    resultado.textContent = "";
+
+    mostrarPregunta(ronda.pregunta);
+}
+
+async function precargarSiguienteRonda() {
+    try {
+        let ronda = await obtenerRonda();
+
+        while (tweetsUsados.includes(ronda.tweet_id)) {
+            ronda = await obtenerRonda();
+        }
+
+        proximaRonda = ronda;
+
+    } catch (error) {
+        console.error(
+            "Error al precargar la siguiente ronda:",
+            error
+        );
+    }
 }
 
 async function siguienteRonda() {
